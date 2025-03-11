@@ -445,3 +445,62 @@ SELECT s.ID, s.name, s.dept_name, 10000
 FROM student s
 WHERE s.tot_cred > 100;
 select * from instructor;
+select * from instructor where salary is not null;
+
+
+
+
+-- how to create view?
+create view faculty as  select ID, name, dept_name from instructor;
+
+-- showing the view
+select * from faculty;
+select name from faculty   where dept_name = 'Biology';
+
+-- more advanced operation
+create view departments_total_salary(dept_name, total_salary) as  select dept_name, sum(salary)   from instructor group by dept_name;
+select * from departments_total_salary;
+
+-- create view from other view
+create view physics_fall_2017 as select course.course_id, sec_id, building, room_number  from course, section  
+where course.course_id = section.course_id
+and course.dept_name = 'Physics' 
+and section.semester = 'Fall'  
+and section.year = '2017';
+select * from physics_fall_2017;
+create view physics_fall_2017_watson 
+as  select course_id, room_number   from physics_fall_2017   
+where building= 'Watson';
+select * from physics_fall_2017_watson;
+
+-- view modification
+select * from faculty;
+insert into faculty values ('30765', 'Green', 'Music');
+select * from instructor;
+update faculty set name= 'Bule' where id ='30765';
+select * from faculty;
+select * from instructor;
+
+
+-- index
+select * from student;
+create index studentID_index on student(ID);
+SHOW INDEX FROM student;
+SHOW INDEX FROM student WHERE Key_name = 'studentID_index';
+drop index studentID_index on student;
+
+-- users
+create user user1 identified by 'password1';
+select * from mysql.user;
+drop user user1;
+select * from mysql.user;
+
+-- grant
+create user Amit identified by 'password1';
+create user Satoshi identified by 'password1';
+grant  select on  department to Amit,  Satoshi;
+
+-- role privilege
+create role instructor;
+grant instructor to Amit;
+grant select on takes to instructor;
